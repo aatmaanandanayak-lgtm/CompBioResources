@@ -28,9 +28,7 @@ from typing import Optional
 import numpy as np
 
 
-# ---------------------------------------------------------------------------
 # Data containers
-# ---------------------------------------------------------------------------
 
 @dataclass
 class ElectronDensityMap:
@@ -169,9 +167,7 @@ class ElectronDensityMap:
         return float(c0 * (1 - d[2]) + c1 * d[2])
 
 
-# ---------------------------------------------------------------------------
 # CCP4/MRC map reader
-# ---------------------------------------------------------------------------
 
 def load_ccp4_map(filepath: str) -> ElectronDensityMap:
     """
@@ -280,9 +276,7 @@ def load_ccp4_map(filepath: str) -> ElectronDensityMap:
     )
 
 
-# ---------------------------------------------------------------------------
 # PDB atom reader
-# ---------------------------------------------------------------------------
 
 @dataclass
 class Atom:

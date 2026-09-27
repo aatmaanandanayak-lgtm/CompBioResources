@@ -1,23 +1,3 @@
-"""
-gnn_allostery/models/allosteric_gnn.py
-
-Graph Neural Network architecture for residue-level allosteric site prediction
-and edge-level allosteric pathway scoring.
-
-Architecture overview
----------------------
-The model consists of a stack of message-passing layers that update each
-residue's representation by aggregating information from its neighbours,
-weighted by edge features. Two output heads are attached:
-
-  1. Node classifier  — outputs P(residue i is allosteric) for each node.
-  2. Edge scorer      — outputs a pathway importance weight w_ij for each edge,
-                        used downstream to identify allosteric communication paths.
-
-Both heads are trained jointly when pathway labels are available; the node
-classification head alone is used when only site-level labels exist.
-"""
-
 from __future__ import annotations
 
 import torch
@@ -25,10 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 
-
-# ---------------------------------------------------------------------------
 # Message-passing layer
-# ---------------------------------------------------------------------------
 
 class MPNNLayer(nn.Module):
     """
@@ -104,9 +81,8 @@ class MPNNLayer(nn.Module):
         return h_new
 
 
-# ---------------------------------------------------------------------------
+
 # Full GNN model
-# ---------------------------------------------------------------------------
 
 class AllostericGNN(nn.Module):
     """
@@ -218,9 +194,7 @@ class AllostericGNN(nn.Module):
         return out
 
 
-# ---------------------------------------------------------------------------
-# Focal loss for imbalanced classification
-# ---------------------------------------------------------------------------
+# Focal loss (imbalanced classification)
 
 class FocalLoss(nn.Module):
     """

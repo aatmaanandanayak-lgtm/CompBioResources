@@ -1,8 +1,7 @@
 """
 ms_peptide_fingerprinting/identification/database_search.py
 
-Database search pipeline for peptide mass fingerprinting.
-
+Background
 Given a set of MS/MS spectra and a protein sequence database (FASTA), this
 module:
 
@@ -41,10 +40,7 @@ from ms_peptide_fingerprinting.scoring.spectrum_scoring import (
     cosine_score,
 )
 
-
-# ---------------------------------------------------------------------------
 # Protease definitions (cleavage rules as regex)
-# ---------------------------------------------------------------------------
 
 PROTEASE_RULES: dict[str, str] = {
     "trypsin":        r"(?<=[KR])(?!P)",         # cleave after K/R, not before P
@@ -57,9 +53,7 @@ PROTEASE_RULES: dict[str, str] = {
 }
 
 
-# ---------------------------------------------------------------------------
 # FASTA reader
-# ---------------------------------------------------------------------------
 
 def parse_fasta(filepath: str, decoy_prefix: str = "DECOY_") -> Iterator[tuple[str, str]]:
     """
@@ -98,10 +92,7 @@ def parse_fasta(filepath: str, decoy_prefix: str = "DECOY_") -> Iterator[tuple[s
         if decoy_prefix:
             yield decoy_prefix + current_header, seq[::-1]
 
-
-# ---------------------------------------------------------------------------
 # In silico digestion
-# ---------------------------------------------------------------------------
 
 def digest_protein(
     sequence: str,
@@ -150,10 +141,8 @@ def digest_protein(
 
     return list(peptides)
 
-
-# ---------------------------------------------------------------------------
 # Peptide-spectrum match result
-# ---------------------------------------------------------------------------
+
 
 @dataclass
 class PSM:
@@ -176,9 +165,7 @@ class PSM:
         return self.hyperscore + 5.0 * self.cosine_score
 
 
-# ---------------------------------------------------------------------------
 # FDR estimation (target-decoy)
-# ---------------------------------------------------------------------------
 
 def estimate_fdr(psms: list[PSM], decoy_prefix: str = "DECOY_") -> list[PSM]:
     """
@@ -209,9 +196,7 @@ def estimate_fdr(psms: list[PSM], decoy_prefix: str = "DECOY_") -> list[PSM]:
     return psms_sorted
 
 
-# ---------------------------------------------------------------------------
 # Main database search engine
-# ---------------------------------------------------------------------------
 
 class DatabaseSearchEngine:
     """

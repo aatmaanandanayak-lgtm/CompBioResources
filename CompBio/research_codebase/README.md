@@ -42,9 +42,9 @@ research_codebase/
 
 ### 1. GNN-Based Allosteric Site and Pathway Prediction (`gnn_allostery/`)
 
-Proteins are allosterically regulated when a binding event at one site propagates a functional change to a distal site. Predicting where these allosteric sites are is challenging enough (for a novel protein that hasn't been characterised) but understanding how signals could travel from an allosteric to an active site normally requires extensive spectroscopic characterisation (i.e., NMR CSP data, which itself can 
+Proteins are allosterically regulated when a binding event at one site propagates a functional change to a distal site. Predicting where these allosteric sites are is challenging enough (for a novel protein that hasn't been characterised) but understanding how signals could travel from an allosteric to an active site normally requires extensive spectroscopic characterisation (i.e., NMR CSP data, which itself is difficult to interpret if one isn't sure whether a CSP is due to direct binding with a ligand or the actual allosteric conformational change).
 
-This project builds a graph neural network pipeline in which proteins are represented as residue-level graphs. Node features encode amino acid identity, physicochemical properties, secondary structure, solvent-accessible surface area, B-factors, and evolutionary conservation scores. Edge features capture inter-residue distances, contact types (hydrogen bonds, salt bridges, hydrophobic contacts), and coevolutionary coupling strengths. The model is trained on labeled allosteric sites from the Allosteric Database (ASD), with non-redundant sequence-based train/test splits and focal loss to address class imbalance. A second model head outputs per-edge importance scores to predict allosteric communication pathways between predicted allosteric pockets and known active sites.
+Proteins can surprisingly be represented very well using residue-level graphs: node features can encode amino acid (AA) identity, physicochemical properties, secondary structure propensity and solvent-accessible surface area (may be context dependent), B-factors, and evolutionary conservation scores (not the most exciting but can be useful), while edge features can capture chain distances, contact types (H-bonds, salt-bridges, hydrophobic contacts), and coevolutionary coupling strengths (potentially useful). This naturally led to the idea of developing a graph neural network (GNN) pipeline, with the model being trained on labeled allosteric sites from the Allosteric Database (ASD). A non-redundant sequence-based train/test split was used in the hopes of avoiding relationship memorisation from the training dataset. Equally, since most residues in proteins (even allosteric ones) do not actually play a role in propagation of the allosteric conformational change, focal loss was used to upweight minority allosteric residues. 
 
 **Key dependencies:** PyTorch, PyTorch Geometric, BioPython, NumPy, scikit-learn
 
@@ -52,9 +52,9 @@ This project builds a graph neural network pipeline in which proteins are repres
 
 ### 2. Spatial Stochastic Simulation of the Mitochondrial ETC (`mitochondrial_etc/`)
 
-The mitochondrial electron transport chain (ETC) drives ATP synthesis via a series of redox reactions across Complexes I–IV, with mobile carriers (ubiquinone, cytochrome c) shuttling electrons between complexes. Understanding how changes in individual biophysical parameters affect overall electron flux is critical for studying mitochondrial disease and aging.
+Respiratory ATP synthesis involves a series of redox reactions across complexes (I-IV) embedded in the mitochondrial membrane (forming the mitochondrial electron transport chain - ETC) and mediated by the mobile carriers ubiquinone and cytochrome c. While structural studies have shown that the large respiratory complexes can associate to form supercomplexes ('respirasomes'), the dependence of the kinetics of electron transfer on the formation of these species has been a topic of debate (a.k.a the solid-state vs the fluid-state model). The aim was to simulate redox processes within the ETC following the imposition of distinct constraints (to artificially drive the formation of a respirasome-like state) and look at the resulting electron flux and determine its dependence on each parameter.
 
-This project implements the ETC as a spatial stochastic simulation in two independent frameworks: a Smoldyn-interfacing particle-based simulation, and a Python stochastic spatial PDE solver. Each respiratory complex is modelled as a state machine derived from a decomposition of its multi-step redox chemistry into tractable partial reactions that preserve physiological stoichiometry and kinetics. Parameter sweeps are run across key variables (complex densities, diffusion coefficients, rate constants), and carrier flux time courses are fitted to bi-exponential functions. Control runs and mathematical correction procedures account for artefacts introduced by the simulation software.
+This project implemented the ETC as a spatial stochastic simulation in two independent frameworks (that were not equally successful): a Smoldyn-interfacing particle-based simulation and a Python stochastic spatial PDE solver. Each respiratory complex was modelled as a state machine derived from a decomposition of its multi-step redox chemistry into tractable partial reactions that preserve physiological stoichiometry and kinetics. Parameter sweeps were run across key variables (complex densities, diffusion coefficients, rate constants), and carrier flux time courses were fitted to bi-exponential functions. Control runs and mathematical correction procedures were added to attempt to account for artefacts introduced by the simulation software.
 
 **Key dependencies:** NumPy, SciPy, Matplotlib, pandas
 
@@ -62,9 +62,9 @@ This project implements the ETC as a spatial stochastic simulation in two indepe
 
 ### 3. Rouse Polymer Model Simulations for Protein Folding (`rouse_polymer/`)
 
-Two competing models describe how proteins fold: the diffusion-collision model (DCM), in which independently folded microdomains diffuse and coalesce, and the nucleation-condensation model (NCM), in which structure forms cooperatively around a nucleus. Discriminating between them in the cellular environment — where macromolecular crowding and chaperone confinement impose additional constraints — requires going beyond in vitro kinetics.
+Following the Stanford Undergraduate Research Journal's acceptance (for their Winter 2025 issue) of my statistical mechanical analysis of which of the two competing models of protein folding - the diffusion-collision model (DCM) vs the nucleation-condensation model (NCM) - would likely prevail in the crowded cellular milieu, I wanted to try and see if polymer simulations would add to my finding.
 
-This project implements Rouse chain simulations to model polypeptide dynamics under physiologically relevant constraints, including confinement geometries mimicking the GroEL/ES chaperonin cavity and effective crowding potentials. By computing first-passage contact times between chain segments under DCM and NCM-like potentials, the simulations test which model is consistent with the chaperone-mediated folding rate accelerations observed experimentally. The results support the prevalence of the DCM in vivo and were published in the Winter 2025 issue of the *Stanford Undergraduate Research Journal*.
+This project implemented Rouse chain simulations to model polypeptide dynamics under constraints including confinement geometries mimicking the GroEL/ES chaperonin cavity and effective crowding potentials. By then computing first-passage contact times between chain segments under DCM and NCM-like potentials, the simulations tested which model was consistent with the chaperone-mediated folding rate accelerations observed experimentally: under DCM-like potentials, the contact times were more consistent with experimental observations.
 
 **Key dependencies:** NumPy, SciPy, Matplotlib
 
@@ -75,22 +75,14 @@ This project implements Rouse chain simulations to model polypeptide dynamics un
 ```bash
 pip install torch torch-geometric biopython numpy scipy matplotlib pandas scikit-learn
 ```
-
 ---
 
-## Citation
-
-If any part of this code is useful to your work, please cite:
-
-> "Prevalence of the Diffusion Collision Model of Protein Folding In Vivo", *Stanford Undergraduate Research Journal*, Winter 2025.
-
----
 
 ### 4. MS/MS Peptide Mass Fingerprinting (`ms_peptide_fingerprinting/`)
 
-Tandem mass spectrometry (MS/MS) generates fragment ion spectra that encode the amino acid sequence of a peptide. Identifying the originating peptide — either by database search or de novo sequencing — is the central problem in shotgun proteomics.
+Tandem mass spectrometry (MS/MS) generates fragment ion spectra that encode the amino acid sequence of a peptide. Identifying the originating peptide — either by database search or de novo sequencing — was the at the centre of one my projects to determine the nature of a disease marker in patient serum via shotgun proteomics.
 
-This project implements a complete peptide identification pipeline. The I/O module handles MGF and mzML spectral formats with a preprocessing pipeline covering noise filtering, deisotoping, and peak picking. The fragmentation module generates theoretical b/y/a/c/x/z ion series for any peptide sequence with arbitrary modifications (phosphorylation, oxidation, carbamidomethylation, etc.). Two scoring functions are implemented: a hyperscore (X!Tandem-style, rewarding both the number and intensity of matched ions) and a normalised cosine similarity between binned observed and theoretical spectra. A de novo sequencing module independently interprets spectra as directed acyclic graph (DAG) paths through fragment mass differences. For database search, proteins are digested in silico with configurable proteases and PSMs are ranked with target-decoy FDR estimation.
+This project implemented a complete peptide identification pipeline. The I/O module handles MGF and mzML spectral formats with a preprocessing pipeline covering noise filtering, deisotoping, and peak picking. The fragmentation module generates theoretical b/y/a/c/x/z ion series for any peptide sequence with arbitrary modifications (phosphorylation, oxidation, carbamidomethylation, etc.). Two scoring functions are implemented: a hyperscore (X!Tandem-style, rewarding both the number and intensity of matched ions) and a normalised cosine similarity between binned observed and theoretical spectra. A de novo sequencing module independently interpreted spectra as directed acyclic graph (DAG) paths through fragment mass differences. For database search, proteins were digested in silico with configurable proteases and peptide-spectrum matches were ranked with target-decoy false-discovery rate estimation.
 
 **Key dependencies:** NumPy, SciPy
 

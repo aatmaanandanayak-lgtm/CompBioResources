@@ -26,10 +26,7 @@ from typing import Iterator, Optional
 
 import numpy as np
 
-
-# ---------------------------------------------------------------------------
 # Data containers
-# ---------------------------------------------------------------------------
 
 @dataclass
 class MSMSSpectrum:
@@ -83,9 +80,7 @@ class MSMSSpectrum:
         )
 
 
-# ---------------------------------------------------------------------------
 # MGF parser
-# ---------------------------------------------------------------------------
 
 def parse_mgf(filepath: str) -> Iterator[MSMSSpectrum]:
     """
@@ -204,10 +199,7 @@ def _is_peak_line(line: str) -> bool:
     except ValueError:
         return False
 
-
-# ---------------------------------------------------------------------------
 # Simple mzML parser (minimal, schema-independent)
-# ---------------------------------------------------------------------------
 
 def parse_mzml(filepath: str) -> Iterator[MSMSSpectrum]:
     """
@@ -318,10 +310,7 @@ def parse_mzml(filepath: str) -> Iterator[MSMSSpectrum]:
                 rt=rt,
             )
 
-
-# ---------------------------------------------------------------------------
 # Spectrum loading dispatcher
-# ---------------------------------------------------------------------------
 
 def load_spectra(filepath: str) -> list[MSMSSpectrum]:
     """
@@ -357,9 +346,7 @@ def _load_plain_text(filepath: str) -> MSMSSpectrum:
     )
 
 
-# ---------------------------------------------------------------------------
 # Spectrum preprocessing
-# ---------------------------------------------------------------------------
 
 class SpectrumPreprocessor:
     """

@@ -14,7 +14,8 @@ Analyses performed:
 
 Associated publication:
   "Prevalence of the Diffusion Collision Model of Protein Folding In Vivo"
-  Stanford Undergraduate Research Journal, Winter 2025.
+  Stanford Undergraduate Research Journal, Winter 2025. Can be found at 
+  https://doi.org/10.60690/y9pdej31
 """
 
 from __future__ import annotations

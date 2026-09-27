@@ -376,7 +376,7 @@ def load_pdb_atoms(filepath: str, model: int = 1) -> list[Atom]:
 
 def load_multiple_models(filepath: str) -> list[list[Atom]]:
     """
-    Load all models from a multi-model PDB file (e.g. NMR ensemble).
+    Load all models from a multi-model PDB file (like an NMR ensemble).
 
     Returns a list of atom lists, one per model.
     """

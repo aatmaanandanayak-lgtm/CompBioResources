@@ -172,7 +172,7 @@ def predict(
     distance_cutoff: float = 8.0, # increase for denser graph (slower but more pathways caught)
     prob_threshold: float = 0.4,
     cluster_radius: float = 10.0,
-    hidden_dim: int = 128, # match checkpoint training (or error)
+    hidden_dim: int = 128, # match checkpoint training (or it will error)
     num_layers: int = 4, # ""
     device_str: str = "cpu", #cuda if GPU available
 ) -> dict:

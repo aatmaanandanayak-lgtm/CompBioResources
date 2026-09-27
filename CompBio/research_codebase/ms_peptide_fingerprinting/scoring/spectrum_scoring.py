@@ -11,7 +11,7 @@ Two complementary approaches implemented:
    theoretical spectrum and score it against the observed spectrum.
    Score functions implemented:
      - Hyperscore (X!Tandem-style): product of matched b/y ion counts
-       and summed matched intensities, log-transformed.
+       and summed matched intensities; log-transformed.
      - Dot-product cosine similarity: normalised dot product between
        observed and theoretical intensity vectors.
 

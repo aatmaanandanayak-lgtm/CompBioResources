@@ -38,10 +38,7 @@ from typing import Callable
 import numpy as np
 from scipy.optimize import curve_fit
 
-
-# ---------------------------------------------------------------------------
 # Physical constants and default parameters
-# ---------------------------------------------------------------------------
 
 @dataclass
 class SimulationParams:

@@ -1,11 +1,11 @@
 """
 electron_density_msd/analysis/msd_from_density.py
 
-Identification of residues with the greatest conformational flexibility from
+Identifying residues with the greatest conformational flexibility from
 electron density maps, quantified via mean-square displacement (MSD) estimates.
 
-Scientific background
----------------------
+Background
+
 In crystallographic refinement, the Debye-Waller (temperature) factor B
 relates to atomic MSD by:
 
@@ -13,9 +13,9 @@ relates to atomic MSD by:
 
 where <u²> is the isotropic MSD of the atom about its mean position (Å²).
 
-However, B-factors conflate true thermal/conformational flexibility with
-model errors and crystal contact effects. A complementary measure of
-flexibility can be extracted directly from the electron density map:
+But the ability of B-factors to report 'real' conformational flexibility can be impinged by
+crystal contact effects (that artificially rigidify a structural element). A complementary measure of
+flexibility could be extracted directly from the electron density map:
 
   Method 1 — Real-space density variance (RSDV):
     For each residue, compute the variance of density values in the voxels
@@ -57,16 +57,13 @@ from scipy.optimize import curve_fit
 from electron_density_msd.io.density_io import Atom, ElectronDensityMap
 
 
-# ---------------------------------------------------------------------------
+
 # Constants
-# ---------------------------------------------------------------------------
 
 B_TO_MSD = 1.0 / (8.0 * np.pi**2)   # MSD (Å²) = B * B_TO_MSD
 
 
-# ---------------------------------------------------------------------------
 # Result containers
-# ---------------------------------------------------------------------------
 
 @dataclass
 class ResidueMSD:
@@ -107,10 +104,7 @@ class ResidueMSD:
     def residue_id(self) -> str:
         return f"{self.chain}_{self.resseq}_{self.resname}"
 
-
-# ---------------------------------------------------------------------------
 # Utility: extract density values in a sphere around a point
-# ---------------------------------------------------------------------------
 
 def extract_sphere(
     density_map: ElectronDensityMap,
@@ -165,9 +159,8 @@ def extract_sphere(
     return np.array(values, dtype=np.float64), np.array(coords, dtype=np.float64)
 
 
-# ---------------------------------------------------------------------------
+
 # Method 1: B-factor-derived MSD
-# ---------------------------------------------------------------------------
 
 def compute_bfactor_msd(atoms: list[Atom]) -> dict[tuple[str, int], float]:
     """
@@ -187,9 +180,8 @@ def compute_bfactor_msd(atoms: list[Atom]) -> dict[tuple[str, int], float]:
     }
 
 
-# ---------------------------------------------------------------------------
+
 # Method 2: Local density variance around each residue
-# ---------------------------------------------------------------------------
 
 def compute_density_variance(
     density_map: ElectronDensityMap,
@@ -227,21 +219,19 @@ def compute_density_variance(
     return result
 
 
-# ---------------------------------------------------------------------------
 # Method 3: Real-space correlation coefficient (RSCC)
-# ---------------------------------------------------------------------------
 
 def gaussian_density(coords: np.ndarray, center: np.ndarray, sigma: float) -> np.ndarray:
     """Evaluate an isotropic 3D Gaussian at given Cartesian coordinates."""
     r2 = np.sum((coords - center[np.newaxis, :]) ** 2, axis=1)
-    return np.exp(-r2 / (2 * sigma**2))
+    return np.exp(-r2 / (2 * sigma**2)) 
 
 
 def compute_rscc(
     density_map: ElectronDensityMap,
     atoms: list[Atom],
-    radius: float = 3.0,
-    sigma: float = 0.8,
+    radius: float = 3.0, # controls number of voxels included for RSCC calculation; decrease for faster performance
+    sigma: float = 0.8, # controls Gaussian width; set based on map resolution
     calpha_only: bool = True,
 ) -> dict[tuple[str, int], float]:
     """
@@ -295,9 +285,8 @@ def compute_rscc(
     return result
 
 
-# ---------------------------------------------------------------------------
+
 # Method 4: Centroid MSD across ensemble (multi-model)
-# ---------------------------------------------------------------------------
 
 def compute_centroid_msd(
     density_maps: list[ElectronDensityMap],
@@ -359,10 +348,7 @@ def compute_centroid_msd(
 
     return result
 
-
-# ---------------------------------------------------------------------------
 # Consensus flexibility scorer
-# ---------------------------------------------------------------------------
 
 class ResidueFlexibilityAnalyser:
     """
@@ -548,9 +534,7 @@ class ResidueFlexibilityAnalyser:
         return results
 
 
-# ---------------------------------------------------------------------------
 # Reporting utilities
-# ---------------------------------------------------------------------------
 
 def print_flexibility_report(
     results: list[ResidueMSD],

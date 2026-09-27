@@ -5,36 +5,27 @@ Rouse polymer model simulations for studying protein folding kinetics under
 physiologically relevant constraints.
 
 Background
-----------
-The Rouse model treats a polymer chain as N beads connected by harmonic springs
-with no hydrodynamic interactions. It provides a tractable description of
-polypeptide dynamics at coarse-grained resolution and is well-suited for
-studying contact formation rates between chain segments — a key observable for
-discriminating between competing folding models.
+The Rouse model treats a polymer chain as N beads connected by harmonic springs (ignoring hydrodynamic
+interactions). It provides a good enough description of polypeptide dynamics at CG resolution and provides
+the necessary contact formation rates between chain segments as output (needed to discriminate b/w models).
 
-Two models of protein folding are compared:
+The central tenets of the two models are as such:
 
   Diffusion-Collision Model (DCM)
       Independently stable microdomains (helices, hairpins) form first, then
       diffuse and collide to assemble the native structure. The rate-limiting
-      step is the bimolecular collision of pre-formed structural units.
+      step is the collision of pre-formed structural units.
       Chaperone confinement accelerates folding by reducing the effective
       diffusion space and increasing collision frequency.
 
   Nucleation-Condensation Model (NCM)
       Structure forms cooperatively around a weakly stable nucleus; secondary
       and tertiary contacts develop simultaneously. Confinement does not
-      straightforwardly accelerate folding under this model.
+      straightforwardly (linearly) accelerate folding under this model.
 
-This script implements overdamped Langevin (Brownian) dynamics of a Rouse chain
-with optional confinement potentials mimicking the GroEL/ES cavity, and
-computes first-passage contact times (FPCTs) between designated microdomain
-segments as the primary observable.
-
-Published context
------------------
-Simulations supporting: "Prevalence of the Diffusion Collision Model of Protein
-Folding In Vivo", Stanford Undergraduate Research Journal, Winter 2025.
+Overdamped Langevin (Brownian) dynamics of a Rouse chain with optional confinement potentials mimic 
+the GroEL/ES cavity; first-passage contact times (FPCTs) between designated microdomain
+segments are the primary observable.
 """
 
 from __future__ import annotations
@@ -45,9 +36,7 @@ from typing import Optional
 import numpy as np
 
 
-# ---------------------------------------------------------------------------
 # Parameters
-# ---------------------------------------------------------------------------
 
 @dataclass
 class RouseParams:
@@ -90,10 +79,7 @@ class RouseParams:
     # Seed
     seed: int = 0
 
-
-# ---------------------------------------------------------------------------
 # Force computation
-# ---------------------------------------------------------------------------
 
 def compute_forces(
     positions: np.ndarray,
@@ -171,10 +157,7 @@ def compute_forces(
 
     return forces
 
-
-# ---------------------------------------------------------------------------
 # Brownian dynamics integrator (overdamped Langevin)
-# ---------------------------------------------------------------------------
 
 def brownian_dynamics_step(
     positions: np.ndarray,
@@ -194,10 +177,7 @@ def brownian_dynamics_step(
     positions_new = positions + (params.dt / params.gamma) * forces + noise
     return positions_new
 
-
-# ---------------------------------------------------------------------------
 # First-passage contact time measurement
-# ---------------------------------------------------------------------------
 
 def run_single_trajectory(
     params: RouseParams,
@@ -246,10 +226,8 @@ def run_single_trajectory(
 
     return fpct
 
-
-# ---------------------------------------------------------------------------
 # Multi-trajectory FPCT statistics
-# ---------------------------------------------------------------------------
+
 
 def compute_fpct_statistics(params: RouseParams) -> dict:
     """
@@ -295,10 +273,8 @@ def compute_fpct_statistics(params: RouseParams) -> dict:
             }
     return stats
 
-
-# ---------------------------------------------------------------------------
 # Model comparison: DCM vs NCM under cellular constraints
-# ---------------------------------------------------------------------------
+
 
 def compare_models(base_params: RouseParams) -> dict:
     """
@@ -354,10 +330,8 @@ def compare_models(base_params: RouseParams) -> dict:
 
     return results
 
-
-# ---------------------------------------------------------------------------
 # Entry point
-# ---------------------------------------------------------------------------
+
 
 if __name__ == "__main__":
     base_params = RouseParams(

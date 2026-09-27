@@ -1,13 +1,3 @@
-"""
-gnn_allostery/utils/graph_construction.py
-
-Constructs residue-level protein contact graphs from PDB structures for use
-as input to the allosteric site prediction GNN. Each residue becomes a node;
-edges are drawn between residues whose Cα atoms lie within a distance cutoff.
-Node and edge features are assembled from structural, physicochemical, and
-evolutionary data.
-"""
-
 from __future__ import annotations
 
 import numpy as np
@@ -16,10 +6,7 @@ from typing import Optional
 from Bio.PDB import PDBParser, DSSP
 from Bio.PDB.ResidueDepth import ResidueDepth, get_surface
 
-
-# ---------------------------------------------------------------------------
 # Amino-acid property lookup tables
-# ---------------------------------------------------------------------------
 
 AA_ONE_LETTER = list("ACDEFGHIKLMNPQRSTVWY")
 AA_INDEX = {aa: i for i, aa in enumerate(AA_ONE_LETTER)}
@@ -50,10 +37,7 @@ VDW_VOLUME = {
 
 SS_INDEX = {"H": 0, "E": 1, "C": 2, "-": 2}  # helix, sheet, coil
 
-
-# ---------------------------------------------------------------------------
 # Data containers
-# ---------------------------------------------------------------------------
 
 @dataclass
 class ResidueFeatures:
@@ -117,10 +101,7 @@ class ProteinGraph:
     residue_ids: list
     ca_coords: np.ndarray
 
-
-# ---------------------------------------------------------------------------
 # Feature extraction helpers
-# ---------------------------------------------------------------------------
 
 def _run_dssp(model, pdb_file: str) -> dict:
     """Return DSSP secondary-structure and SASA assignments keyed by residue."""
@@ -156,10 +137,7 @@ def _ss_onehot(ss_code: str) -> np.ndarray:
     vec[SS_INDEX.get(ss_code, 2)] = 1.0
     return vec
 
-
-# ---------------------------------------------------------------------------
 # Edge feature computation
-# ---------------------------------------------------------------------------
 
 def _compute_edge_features(
     coords_i: np.ndarray,
@@ -186,10 +164,7 @@ def _compute_edge_features(
         dtype=np.float32,
     )
 
-
-# ---------------------------------------------------------------------------
 # Main graph builder
-# ---------------------------------------------------------------------------
 
 def build_protein_graph(
     pdb_file: str,
@@ -358,9 +333,7 @@ def build_protein_graph(
     )
 
 
-# ---------------------------------------------------------------------------
 # Three-letter to one-letter amino acid code mapping
-# ---------------------------------------------------------------------------
 
 _three_to_one = {
     "ALA": "A", "ARG": "R", "ASN": "N", "ASP": "D", "CYS": "C",

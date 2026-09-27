@@ -1,16 +1,5 @@
 """
-mitochondrial_etc/analysis/analyse_etc.py
-
-Post-processing and analysis utilities for the mitochondrial ETC simulation.
-
-Provides:
-  - Bi-exponential fitting of carrier flux time courses with residual diagnostics.
-  - Parameter sweep visualisation: heatmaps of fitted rate constants and R²
-    as a function of swept parameters.
-  - Control run comparisons to detect and correct for software-introduced artefacts.
-
-These analyses correspond to those originally carried out in MATLAB; this script
-re-implements the same logic in Python/NumPy/SciPy for reproducibility.
+carried out in MatLab originally
 """
 
 from __future__ import annotations
@@ -24,10 +13,7 @@ import numpy as np
 from scipy.optimize import curve_fit
 from scipy.stats import pearsonr
 
-
-# ---------------------------------------------------------------------------
 # Bi-exponential model and fitting
-# ---------------------------------------------------------------------------
 
 def biexponential(t: np.ndarray, A1: float, k1: float, A2: float, k2: float, C: float) -> np.ndarray:
     return A1 * np.exp(-k1 * t) + A2 * np.exp(-k2 * t) + C
@@ -82,10 +68,8 @@ def fit_biexponential(
     except (RuntimeError, ValueError) as e:
         return {"success": False, "error": str(e)}
 
-
-# ---------------------------------------------------------------------------
 # Artefact correction via control runs
-# ---------------------------------------------------------------------------
+
 
 def correct_for_artefacts(
     signal: np.ndarray,
@@ -119,10 +103,8 @@ def correct_for_artefacts(
     corrected = signal - control_drift
     return corrected
 
-
-# ---------------------------------------------------------------------------
 # Plotting utilities
-# ---------------------------------------------------------------------------
+
 
 def plot_timecourse_with_fit(
     t: np.ndarray,
@@ -205,10 +187,7 @@ def plot_sweep_heatmap(
         print(f"Heatmap saved to {output_path}")
     plt.show()
 
-
-# ---------------------------------------------------------------------------
 # Sensitivity index computation (Sobol-style rank correlation)
-# ---------------------------------------------------------------------------
 
 def compute_rank_sensitivity(
     sweep_results: list[dict],
@@ -247,10 +226,7 @@ def compute_rank_sensitivity(
     )
     return sensitivities
 
-
-# ---------------------------------------------------------------------------
 # Entry point (example analysis on saved simulation output)
-# ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
     import argparse

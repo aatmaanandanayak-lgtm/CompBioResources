@@ -1,8 +1,7 @@
 """
 ms_peptide_fingerprinting/fragmentation/fragment_ions.py
 
-Generation of theoretical MS/MS fragment ion series for peptide sequences.
-
+Background 
 For a peptide of sequence P₁P₂…Pₙ, collision-induced dissociation (CID) and
 higher-energy collisional dissociation (HCD) produce two primary ion series:
 
@@ -24,11 +23,8 @@ from typing import Optional
 
 import numpy as np
 
-
-# ---------------------------------------------------------------------------
 # Monoisotopic residue masses (Da)
 # Standard 20 amino acids
-# ---------------------------------------------------------------------------
 
 RESIDUE_MASSES: dict[str, float] = {
     "A": 71.03711,
@@ -72,10 +68,7 @@ NH3 = 17.026549
 CO = 27.994915
 H = 1.007825
 
-
-# ---------------------------------------------------------------------------
 # Modification specification
-# ---------------------------------------------------------------------------
 
 @dataclass
 class Modification:
@@ -104,10 +97,7 @@ class Modification:
                 )
             self.delta_mass = MODIFICATION_MASSES[self.name]
 
-
-# ---------------------------------------------------------------------------
 # Fragment ion data container
-# ---------------------------------------------------------------------------
 
 @dataclass
 class FragmentIon:
@@ -118,10 +108,7 @@ class FragmentIon:
     mz: float          # computed m/z value
     sequence: str      # amino acid sequence of the fragment
 
-
-# ---------------------------------------------------------------------------
 # Theoretical spectrum generator
-# ---------------------------------------------------------------------------
 
 class TheoreticalFragmentGenerator:
     """
@@ -289,10 +276,7 @@ class TheoreticalFragmentGenerator:
         else:  # y, x, z
             return sequence[n - i:]
 
-
-# ---------------------------------------------------------------------------
 # Peptide mass calculator
-# ---------------------------------------------------------------------------
 
 def peptide_mass(
     sequence: str,

@@ -31,9 +31,7 @@ from gnn_allostery.models.allosteric_gnn import AllostericGNN
 from gnn_allostery.utils.graph_construction import build_protein_graph, ProteinGraph
 
 
-# ---------------------------------------------------------------------------
-# Pocket detection by greedy clustering of high-probability residues
-# ---------------------------------------------------------------------------
+# Pocket detection (greedy clustering of high-probability residues)
 
 def cluster_allosteric_residues(
     ca_coords: np.ndarray,
@@ -91,9 +89,7 @@ def cluster_allosteric_residues(
     return pockets
 
 
-# ---------------------------------------------------------------------------
 # Pathway extraction via highest-weight path search
-# ---------------------------------------------------------------------------
 
 def extract_top_pathways(
     edge_index: np.ndarray,
@@ -165,10 +161,7 @@ def extract_top_pathways(
     found_paths.sort(key=path_weight, reverse=True)
     return found_paths[:top_k]
 
-
-# ---------------------------------------------------------------------------
 # Main inference routine
-# ---------------------------------------------------------------------------
 
 def predict(
     pdb_file: str,
@@ -261,10 +254,7 @@ def predict(
     print(f"Results saved to {out_path}.")
     return results
 
-
-# ---------------------------------------------------------------------------
 # CLI
-# ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Predict allosteric sites and pathways.")

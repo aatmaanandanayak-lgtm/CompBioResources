@@ -4,7 +4,7 @@ ms_peptide_fingerprinting/scoring/spectrum_scoring.py
 Scoring functions for matching observed MS/MS spectra against theoretical
 fragment ion series.
 
-Two complementary approaches are implemented:
+Two complementary approaches implemented:
 
 1. Database search scoring
    For each candidate peptide from a sequence database, generate its
@@ -39,10 +39,7 @@ from ms_peptide_fingerprinting.fragmentation.fragment_ions import (
 )
 from ms_peptide_fingerprinting.io.spectrum_io import MSMSSpectrum
 
-
-# ---------------------------------------------------------------------------
 # Scoring parameters
-# ---------------------------------------------------------------------------
 
 @dataclass
 class ScoringParams:
@@ -54,10 +51,7 @@ class ScoringParams:
     max_fragment_charge: int = 2
     neutral_losses: bool = True
 
-
-# ---------------------------------------------------------------------------
 # Fragment matching
-# ---------------------------------------------------------------------------
 
 def match_fragments(
     observed_mz: np.ndarray,
@@ -117,10 +111,7 @@ def match_fragments(
 
     return matches
 
-
-# ---------------------------------------------------------------------------
 # Hyperscore (X!Tandem-style)
-# ---------------------------------------------------------------------------
 
 def hyperscore(
     observed: MSMSSpectrum,
@@ -173,10 +164,7 @@ def hyperscore(
     )
     return log_score
 
-
-# ---------------------------------------------------------------------------
 # Cosine similarity score
-# ---------------------------------------------------------------------------
 
 def cosine_score(
     observed: MSMSSpectrum,
@@ -219,10 +207,7 @@ def cosine_score(
 
     return float(np.dot(obs_vec, theo_vec) / (obs_norm * theo_norm))
 
-
-# ---------------------------------------------------------------------------
 # De novo sequencing via DAG path search
-# ---------------------------------------------------------------------------
 
 @dataclass
 class DeNovoNode:

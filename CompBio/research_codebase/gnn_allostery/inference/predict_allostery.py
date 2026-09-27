@@ -36,8 +36,8 @@ from gnn_allostery.utils.graph_construction import build_protein_graph, ProteinG
 def cluster_allosteric_residues(
     ca_coords: np.ndarray,
     node_probs: np.ndarray,
-    prob_threshold: float = 0.4,
-    cluster_radius: float = 10.0,
+    prob_threshold: float = 0.4, # increase to make clustering more conservative
+    cluster_radius: float = 10.0, # decrease to enable detection of sub-pockets for specialised function (like ATP binding vs ATP hydrolysis)
 ) -> list[dict]:
     """
     Greedily cluster residues with predicted allosteric probability above
@@ -97,7 +97,7 @@ def extract_top_pathways(
     source_residues: list[int],
     target_residues: list[int],
     n_residues: int,
-    top_k: int = 5,
+    top_k: int = 5, # number of allowed pathways b/w predicted pocket and active site for searching
 ) -> list[list[int]]:
     """
     Extract the top-k highest-weight paths between a set of source residues
@@ -168,13 +168,13 @@ def predict(
     checkpoint_path: str,
     output_dir: str,
     active_site_residues: list[int] | None = None,
-    chain_id: str = "A",
-    distance_cutoff: float = 8.0,
+    chain_id: str = "A", # PDB chain to analyse
+    distance_cutoff: float = 8.0, # increase for denser graph (slower but more pathways caught)
     prob_threshold: float = 0.4,
     cluster_radius: float = 10.0,
-    hidden_dim: int = 128,
-    num_layers: int = 4,
-    device_str: str = "cpu",
+    hidden_dim: int = 128, # match checkpoint training (or error)
+    num_layers: int = 4, # ""
+    device_str: str = "cpu", #cuda if GPU available
 ) -> dict:
     os.makedirs(output_dir, exist_ok=True)
     device = torch.device(device_str)

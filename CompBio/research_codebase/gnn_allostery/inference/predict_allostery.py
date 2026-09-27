@@ -1,21 +1,3 @@
-"""
-gnn_allostery/inference/predict_allostery.py
-
-Run a trained AllostericGNN on a novel PDB structure to:
-  1. Predict a per-residue allosteric probability map.
-  2. Cluster high-probability residues into candidate allosteric pockets.
-  3. (Optionally) extract high-importance communication pathways between the
-     top-ranked allosteric pocket and a user-specified active/orthosteric site.
-
-Usage
------
-    python predict_allostery.py \
-        --pdb path/to/structure.pdb \
-        --checkpoint path/to/best_model.pt \
-        --active_site_residues 42 43 44 \
-        --output_dir results/
-"""
-
 from __future__ import annotations
 
 import argparse

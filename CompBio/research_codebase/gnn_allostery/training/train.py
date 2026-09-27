@@ -1,14 +1,3 @@
-"""
-gnn_allostery/training/train.py
-
-Training loop for the AllostericGNN. Handles:
-  - Data loading from a directory of pre-built ProteinGraph objects
-  - Stratified train/validation splitting by sequence-identity cluster
-  - Joint optimisation of node-classification and edge-scoring losses
-  - Early stopping and checkpoint saving
-  - Per-epoch logging of ROC-AUC, PR-AUC, and F1 for the positive class
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -33,10 +22,7 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 from gnn_allostery.models.allosteric_gnn import AllostericGNN, FocalLoss
 from gnn_allostery.utils.graph_construction import ProteinGraph
 
-
-# ---------------------------------------------------------------------------
 # Dataset helpers
-# ---------------------------------------------------------------------------
 
 def load_graphs(data_dir: str) -> list[ProteinGraph]:
     """Load all pickled ProteinGraph objects from a directory."""
@@ -63,10 +49,7 @@ def graph_to_tensors(
     )
     return x, ei, ea, labels
 
-
-# ---------------------------------------------------------------------------
 # Metrics
-# ---------------------------------------------------------------------------
 
 def compute_metrics(
     all_probs: np.ndarray,
@@ -87,10 +70,7 @@ def compute_metrics(
     metrics["f1"] = f1_score(all_labels, preds, zero_division=0)
     return metrics
 
-
-# ---------------------------------------------------------------------------
 # Training and validation steps
-# ---------------------------------------------------------------------------
 
 def run_epoch(
     model: AllostericGNN,
@@ -152,10 +132,7 @@ def run_epoch(
     metrics = compute_metrics(all_probs_arr, all_labels_arr) if len(all_labels_arr) > 0 else {}
     return total_loss / max(len(graphs), 1), metrics
 
-
-# ---------------------------------------------------------------------------
 # Main training entry point
-# ---------------------------------------------------------------------------
 
 def train(
     data_dir: str,
@@ -268,10 +245,7 @@ def train(
     print(f"Training complete. Best val ROC-AUC: {best_val_auc:.4f}")
     print(f"Checkpoints and history saved to {output_dir}.")
 
-
-# ---------------------------------------------------------------------------
 # CLI
-# ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train AllostericGNN.")

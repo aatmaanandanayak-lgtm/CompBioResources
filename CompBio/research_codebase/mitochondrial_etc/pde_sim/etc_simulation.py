@@ -10,7 +10,7 @@ redox carriers — ubiquinol/ubiquinone (QH2/Q) and reduced/oxidised
 cytochrome c (CytC_red / CytC_ox) — diffuse stochastically and react when
 they encounter the appropriate complex.
 
-Each complex is modelled as a state machine with a simplified set of partial
+Each complex was modelled as a state machine with a simplified set of partial
 reactions that preserve physiological stoichiometry and first-order/second-order
 kinetics while remaining tractable for lattice-based simulation.
 
@@ -85,10 +85,7 @@ class SimulationParams:
     # Random seed
     seed: int = 0
 
-
-# ---------------------------------------------------------------------------
 # Complex state machines
-# ---------------------------------------------------------------------------
 
 class ComplexState:
     """Generic two-state (IDLE / ACTIVE) model for a respiratory complex."""
@@ -105,10 +102,7 @@ class ComplexState:
     def __repr__(self) -> str:
         return f"{self.complex_type}(r={self.row},c={self.col},state={'IDLE' if self.state == self.IDLE else 'ACTIVE'})"
 
-
-# ---------------------------------------------------------------------------
 # RDME-based simulator
-# ---------------------------------------------------------------------------
 
 class ETCSimulator:
     """
@@ -176,9 +170,9 @@ class ETCSimulator:
         self.t_history: list[float] = []
         self.counts_history: list[np.ndarray] = []   # total counts per species
 
-    # ------------------------------------------------------------------
+
     # Initialisation helpers
-    # ------------------------------------------------------------------
+
 
     def _place_complexes(self) -> list[ComplexState]:
         """Randomly place respiratory complexes on the grid."""
@@ -218,9 +212,8 @@ class ETCSimulator:
             for r, c in zip(rows, cols):
                 self.grid[r, c, species] += 1
 
-    # ------------------------------------------------------------------
+
     # Propensity computation
-    # ------------------------------------------------------------------
 
     def _diffusion_propensities(self) -> tuple[np.ndarray, list]:
         """
@@ -293,9 +286,9 @@ class ETCSimulator:
 
         return np.array(props, dtype=np.float64), events
 
-    # ------------------------------------------------------------------
+
     # Event execution
-    # ------------------------------------------------------------------
+
 
     def _execute_event(self, event: tuple) -> None:
         """Apply a selected event to the simulation state."""
@@ -360,9 +353,9 @@ class ETCSimulator:
             # Electrons transferred to O2 (terminal sink — H2O produced)
             cx.state = ComplexState.IDLE
 
-    # ------------------------------------------------------------------
+
     # Main simulation loop (Gillespie / Next Subvolume Method)
-    # ------------------------------------------------------------------
+
 
     def run(self) -> dict:
         """
@@ -429,9 +422,8 @@ class ETCSimulator:
         self.counts_history.append(self.grid.sum(axis=(0, 1)).copy())
 
 
-# ---------------------------------------------------------------------------
 # Bi-exponential fitting of flux time courses
-# ---------------------------------------------------------------------------
+
 
 def biexponential(t: np.ndarray, A1: float, k1: float, A2: float, k2: float, C: float) -> np.ndarray:
     """f(t) = A1·exp(-k1·t) + A2·exp(-k2·t) + C"""
@@ -472,10 +464,7 @@ def fit_biexponential(
     except RuntimeError as e:
         return {"success": False, "error": str(e)}
 
-
-# ---------------------------------------------------------------------------
 # Parameter sweep
-# ---------------------------------------------------------------------------
 
 def parameter_sweep(
     base_params: SimulationParams,
@@ -521,10 +510,7 @@ def parameter_sweep(
 
     return results
 
-
-# ---------------------------------------------------------------------------
 # Entry point
-# ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
     params = SimulationParams(

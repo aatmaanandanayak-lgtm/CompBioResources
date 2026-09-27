@@ -1,6 +1,6 @@
 # Computational Biology Research — Code Repository
 
-This repository contains Python implementations from three independent research projects in computational biology and biophysics. Each project applies a distinct computational methodology to a specific biological problem.
+This repository contains Python implementations from a few of my research projects in computational biology and biophysics.
 
 ---
 
@@ -8,32 +8,32 @@ This repository contains Python implementations from three independent research 
 
 ```
 research_codebase/
-├── gnn_allostery/              # GNN-based allosteric site & pathway prediction
-│   ├── data/                   # Feature extraction and dataset construction
-│   ├── models/                 # GNN architecture definitions
-│   ├── training/               # Training loop, loss, and evaluation
-│   ├── inference/              # Prediction and pathway scoring on new structures
-│   └── utils/                  # Graph construction and misc utilities
+├── gnn_allostery/              #GNN-based allosteric site & pathway prediction
+│   ├── data/                   #feature extraction and dataset construction
+│   ├── models/                 #GNN architecture definitions
+│   ├── training/               #training loop, loss, and evaluation
+│   ├── inference/              #prediction and pathway scoring on new structures
+│   └── utils/                  #graph construction and misc utilities
 │
-├── mitochondrial_etc/          # Spatial stochastic simulation of the ETC
-│   ├── smoldyn_sim/            # Smoldyn-based particle simulation interface
-│   ├── pde_sim/                # Python stochastic spatial PDE implementation
-│   └── analysis/               # Bi-exponential fitting and parameter sweep analysis
+├── mitochondrial_etc/          #Spatial stochastic simulation of the ETC
+│   ├── smoldyn_sim/            #smoldyn-based particle simulation interface (not the most successful)
+│   ├── pde_sim/                #python stochastic spatial PDE implementation
+│   └── analysis/               #bi-exponential fitting and parameter sweep analysis
 │
-├── rouse_polymer/              # Rouse model simulations for protein folding
-│   ├── simulation/             # Rouse chain dynamics and confinement
-│   └── analysis/               # Rate extraction and model comparison
+├── rouse_polymer/              #Rouse model simulations for protein folding (validating SURJ article findings)
+│   ├── simulation/             #rouse chain dynamics and confinement
+│   └── analysis/               #rate extraction and model comparison
 │
-├── ms_peptide_fingerprinting/  # MS/MS peptide mass fingerprinting & sequencing
-│   ├── io/                     # MGF/mzML spectrum parsing and preprocessing
-│   ├── fragmentation/          # Theoretical fragment ion generation (b/y/a/c/x/z)
-│   ├── scoring/                # Hyperscore, cosine similarity, de novo sequencing
-│   └── identification/         # Database search, FDR estimation, PSM reporting
+├── ms_peptide_fingerprinting/  #MS/MS peptide mass fingerprinting & sequencing
+│   ├── io/                     #MGF/mzML spectrum parsing and preprocessing
+│   ├── fragmentation/          #theoretical fragment ion generation (b/y/a/c/x/z)
+│   ├── scoring/                #hyperscore, cosine similarity, de novo sequencing
+│   └── identification/         #database search, FDR estimation, PSM reporting
 │
-└── electron_density_msd/       # Conformational flexibility from electron density
-    ├── io/                     # CCP4/MRC map and PDB file parsing
-    ├── analysis/               # MSD, density variance, RSCC, centroid displacement
-    └── utils/                  # CLI entry point for flexibility analysis
+└── electron_density_msd/       #Conformational flexibility from electron density
+    ├── io/                     #CCP4/MRC map and PDB file parsing
+    ├── analysis/               #MSD, density variance, RSCC, centroid displacement
+    └── utils/                  #CLI entry point for flexibility analysis
 ```
 
 ---
@@ -42,7 +42,7 @@ research_codebase/
 
 ### 1. GNN-Based Allosteric Site and Pathway Prediction (`gnn_allostery/`)
 
-Proteins are allosterically regulated when a binding event at one site propagates a functional change to a distal site. Predicting where these allosteric sites are, and how signals travel between them, is a central challenge in drug discovery.
+Proteins are allosterically regulated when a binding event at one site propagates a functional change to a distal site. Predicting where these allosteric sites are is challenging enough (for a novel protein that hasn't been characterised) but understanding how signals could travel from an allosteric to an active site normally requires extensive spectroscopic characterisation (i.e., NMR CSP data, which itself can 
 
 This project builds a graph neural network pipeline in which proteins are represented as residue-level graphs. Node features encode amino acid identity, physicochemical properties, secondary structure, solvent-accessible surface area, B-factors, and evolutionary conservation scores. Edge features capture inter-residue distances, contact types (hydrogen bonds, salt bridges, hydrophobic contacts), and coevolutionary coupling strengths. The model is trained on labeled allosteric sites from the Allosteric Database (ASD), with non-redundant sequence-based train/test splits and focal loss to address class imbalance. A second model head outputs per-edge importance scores to predict allosteric communication pathways between predicted allosteric pockets and known active sites.
 

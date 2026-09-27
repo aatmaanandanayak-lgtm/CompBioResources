@@ -1,9 +1,9 @@
 """
 rouse_polymer/analysis/analyse_folding.py
 
-Analysis of first-passage contact time (FPCT) data from Rouse chain simulations
-to discriminate between the diffusion-collision model (DCM) and the
-nucleation-condensation model (NCM) of protein folding under cellular constraints.
+Analysing first-passage contact time (FPCT) data from Rouse chain simulations
+to discriminate between diffusion-collision model (DCM) and the nucleation-condensation model (NCM) 
+under expected cellular constraints.
 
 Analyses performed:
   1. Statistical comparison of mean FPCTs across models and conditions.
@@ -28,10 +28,7 @@ import numpy as np
 from scipy import stats
 from scipy.stats import mannwhitneyu, ks_2samp
 
-
-# ---------------------------------------------------------------------------
 # Statistical comparisons
-# ---------------------------------------------------------------------------
 
 def compare_fpct_distributions(
     fpcts_a: np.ndarray,
@@ -93,10 +90,7 @@ def fit_lognormal(fpcts: np.ndarray) -> dict:
         "scale": float(scale),
     }
 
-
-# ---------------------------------------------------------------------------
 # Plotting
-# ---------------------------------------------------------------------------
 
 def plot_fpct_cdfs(
     fpct_dict: dict[str, np.ndarray],
@@ -206,9 +200,8 @@ def plot_fpct_histograms_with_lognormal(
     plt.show()
 
 
-# ---------------------------------------------------------------------------
-# Summary report
-# ---------------------------------------------------------------------------
+# Summary 
+
 
 def generate_summary(results: dict, contact_pairs: list) -> str:
     """
@@ -244,10 +237,7 @@ def generate_summary(results: dict, contact_pairs: list) -> str:
     ]
     return "\n".join(lines)
 
-
-# ---------------------------------------------------------------------------
 # Entry point
-# ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
     import argparse

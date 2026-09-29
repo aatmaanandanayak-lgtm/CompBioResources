@@ -1,5 +1,5 @@
 """
-carried out in MatLab originally
+in Matlab originally
 """
 
 from __future__ import annotations

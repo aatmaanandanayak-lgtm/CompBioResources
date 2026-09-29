@@ -1,13 +1,13 @@
 # master file to test the formation of respiratory supercomplexes: free diffusion vs substrate channeling (alter specified parameters to shift b/w solid and fluid state)
 
-#boundaries in space (ideally should be reflective but due to inclusion of surfaces, they are transparent)
-#add outside surface later
+# boundaries in space (ideally should be reflective but due to inclusion of surfaces, they are transparent)
+# add outside surface later
 
 dim 2
 boundaries x 0 300
 boundaries y 0 300
 
-#boundaries in time
+# boundaries in time
 time_start 0
 time_stop 10000
 time_step 1
@@ -16,19 +16,19 @@ graphics opengl
 graphic_iter 50
 quit_at_end no
 
-#defining redox carrier species
+# defining redox carrier species
 species CoQ CoQH2
 species NADH NAD
 species CytC_ox CytC_red
 
-#defining proton species for PMF bookkeeping
+# defining proton species for PMF bookkeeping
 species H_mat H_ims
 
-#defining imaginary species to enable electron transfer at CI and CIII
+# defining imaginary species to enable electron transfer at CI and CIII
 species CI_ox CI_red CI_p1 CI_p2 CI_p3 CI_p4
 species CIII_ox CIII_red CIII_p1 CIII_p2
 
-#setting relative diffusion constants
+# setting relative diffusion constants
 difc CoQ 3
 difc CoQH2 3
 difc NADH 20
@@ -36,11 +36,11 @@ difc NAD 20
 difc CytC_ox 11
 difc CytC_red 11
 
-#proton diffusion does not affect the simulation and can (should) be set to zero
+# proton diffusion does not affect the simulation and can (should) be set to zero
 difc H_mat 0
 difc H_ims 0
 
-#maybe surface drifts should be used instead to set the speed of the imaginary reaction units?
+# maybe surface drifts should be used instead to set the speed of the imaginary reaction units?
 difc CI_ox 30
 difc CI_red 30
 difc CI_p1 30

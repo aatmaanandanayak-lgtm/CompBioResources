@@ -1,0 +1,217 @@
+# master file to test the formation of respiratory supercomplexes: free diffusion vs substrate channeling (alter specified parameters to shift b/w solid and fluid state)
+
+#boundaries in space (ideally should be reflective but due to inclusion of surfaces, they are transparent)
+#add outside surface later
+
+dim 2
+boundaries x 0 300
+boundaries y 0 300
+
+#boundaries in time
+time_start 0
+time_stop 10000
+time_step 1
+
+graphics opengl
+graphic_iter 50
+quit_at_end no
+
+#defining redox carrier species
+species CoQ CoQH2
+species NADH NAD
+species CytC_ox CytC_red
+
+#defining proton species for PMF bookkeeping
+species H_mat H_ims
+
+#defining imaginary species to enable electron transfer at CI and CIII
+species CI_ox CI_red CI_p1 CI_p2 CI_p3 CI_p4
+species CIII_ox CIII_red CIII_p1 CIII_p2
+
+#setting relative diffusion constants
+difc CoQ 3
+difc CoQH2 3
+difc NADH 20
+difc NAD 20
+difc CytC_ox 11
+difc CytC_red 11
+
+#proton diffusion does not affect the simulation and can (should) be set to zero
+difc H_mat 0
+difc H_ims 0
+
+#maybe surface drifts should be used instead to set the speed of the imaginary reaction units?
+difc CI_ox 30
+difc CI_red 30
+difc CI_p1 30
+difc CI_p2 30
+difc CI_p3 30
+difc CI_p4 30
+
+difc CIII_ox 50
+difc CIII_red 50
+difc CIII_p1 50
+difc CIII_p2 50
+
+#defining the surfaces part 1: for subsequent compartmentalization
+#surface b/w IMM & IMS: IMM_outer
+start_surface IMM_outer
+action CoQ both reflect
+action CoQH2 both reflect
+action NADH both reflect
+action NAD both reflect
+action CytC_ox both reflect
+action CytC_red both reflect
+action H_mat both reflect
+action H_ims both reflect
+
+action CI_ox both transmit
+action CI_red both transmit
+action CI_p1 both transmit
+action CI_p2 both transmit
+action CI_p3 both transmit
+action CI_p4 both transmit
+action CIII_ox both transmit
+action CIII_red both transmit
+action CIII_p1 both transmit
+action CIII_p2 both transmit
+
+panel rect +y 0 200 300
+end_surface
+
+#surface b/w M & IMM: IMM_inner
+start_surface IMM_inner
+action CoQ both reflect
+action CoQH2 both reflect
+action NADH both reflect
+action NAD both reflect
+action CytC_ox both reflect
+action CytC_red both reflect
+action H_mat both reflect
+action H_ims both reflect
+
+action CI_ox both transmit
+action CI_red both transmit
+action CI_p1 both transmit
+action CI_p2 both transmit
+action CI_p3 both transmit
+action CI_p4 both transmit
+action CIII_ox both transmit
+action CIII_red both transmit
+action CIII_p1 both transmit
+action CIII_p2 both transmit
+
+panel rect +y 0 100 300
+end_surface
+
+#defining the surfaces part 2: to create CI and CIII state machines
+#change the coordinates of either/both to alter relative distances
+#CI (long and narrow)
+start_surface CI_surface
+action all both reflect
+
+panel rect +x 70 80 140
+panel rect -x 80 80 140
+panel rect +y 70 80 10
+panel rect -y 70 220 10
+end_surface
+
+#CIII (short and wide)
+start_surface CIII_surface
+action all both reflect
+
+panel rect +x 210 90 120
+panel rect -x 240 90 120
+panel rect +y 210 90 30
+panel rect -y 210 210 30
+end_surface
+
+#defining a surface to contain the simulation
+start_surface container
+action all both reflect
+panel rect +x 0 300 300
+panel rect -x 300 300 300
+panel rect +y 0 0 300
+panel rect -y 0 300 300
+end_surface
+
+
+#creating the compartments using surfaces
+start_compartment IMS
+surface IMM_outer
+point 150 250
+end_compartment
+
+start_compartment IMM
+surface IMM_outer
+surface IMM_inner
+point 150 150
+end_compartment
+
+start_compartment M
+surface IMM_inner
+point 150 50
+end_compartment
+
+#adding molecules to their respective compartments
+compartment_mol 90 CoQ IMM
+compartment_mol 10 CoQH2 IMM
+compartment_mol 180 NADH M
+compartment_mol 20 NAD M
+compartment_mol 180 CytC_ox M
+compartment_mol 20 CytC_red M
+
+compartment_mol 100 H_mat M
+compartment_mol 100 H_ims IMS
+
+#adding CI and CIII reaction units to their respective surfaces
+surface_mol 20 CI_ox(front) CI_surface all all
+surface_mol 0  CI_red(front) CI_surface all all
+surface_mol 0  CI_p1(front) CI_surface all all
+surface_mol 0  CI_p2(front) CI_surface all all
+surface_mol 0  CI_p3(front) CI_surface all all
+surface_mol 0  CI_p4(front) CI_surface all all
+
+surface_mol 20 CIII_ox(front) CIII_surface all all
+surface_mol 0  CIII_red(front) CIII_surface all all
+surface_mol 0  CIII_p1(front) CIII_surface all all
+surface_mol 0  CIII_p2(front) CIII_surface all all
+
+#reactions
+#CI reactions
+#NADH oxidation
+reaction CI_NADH NADH + CI_ox -> CI_red + NAD 150
+
+#electron transfer to CoQ
+reaction CI_CoQ CoQ + CI_red -> CI_p1 + CoQH2 150
+
+#proton pumping sequence (4 protons to IMS)
+reaction CI_pump1 CI_p1 -> CI_p2 + H_ims 150
+reaction CI_pump2 CI_p2 -> CI_p3 + H_ims 150
+reaction CI_pump3 CI_p3 -> CI_p4 + H_ims 150
+reaction CI_pump4 CI_p4 -> CI_ox + H_ims 150
+
+#CIII reactions
+#CoQH2 oxidation triggers pumping state
+reaction CIII_Q CIII_ox + CoQH2 -> CIII_p1 + CoQ 250
+
+#proton pumping sequence (2 protons to IMS)
+reaction CIII_pump1 CIII_p1 -> CIII_p2 + H_ims 250
+reaction CIII_pump2 CIII_p2 -> CIII_ox + H_ims 250
+
+#cytC reduction after pump completion
+reaction CIII_CytC CIII_ox + CytC_ox -> CIII_red 250
+reaction CIII_red CIII_red -> CIII_ox + CytC_red 250
+
+#output
+cmd n 10 molcountspecies NADH(all) NADH.txt
+cmd n 10 molcountspecies NAD(all) NAD.txt
+cmd n 10 molcountspecies CytC_ox(all) CytC_ox.txt
+cmd n 10 molcountspecies CytC_red(all) CytC_red.txt
+cmd n 10 molcountspecies CoQ(all) CoQ.txt
+cmd n 10 molcountspecies CoQH2(all) CoQH2.txt
+cmd n 10 molcountspecies H_mat(all) H_mat.txt
+cmd n 10 molcountspecies H_ims(all) H_ims.txt
+
+
+
